@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherGPT</string>
+    <string name="app_tagline">હવામાન જે તમને સમજે છે.</string>
+    <string name="nav_home">હોમ</string>
+    <string name="nav_chat">AI ને પૂછો</string>
+    <string name="nav_forecast">આગાહી</string>
+    <string name="nav_alerts">ચેતવણીઓ</string>
+    <string name="nav_profile">પ્રોફાઇલ</string>
+
+    <string name="btn_get_started">શરૂ કરો</string>
+    <string name="btn_allow_location">સ્થાનની મંજૂરી આપો</string>
+    <string name="btn_continue">આગળ વધો</string>
+
+    <string name="persona_farmer">ખેતી અને ખેડૂત</string>
+    <string name="persona_farmer_desc">પાક સલાહ, પિયત સમય અને હવામાન સુરક્ષા</string>
+    <string name="persona_commuter">દૈનિક મુસાફર</string>
+    <string name="persona_aviation">વિમાન મુસાફરી</string>
+    <string name="persona_outdoor">આઉટડોર રમતો</string>
+
+    <string name="metric_humidity">ભેજ</string>
+    <string name="metric_wind">પવન</string>
+    <string name="metric_rain_prob">વરસાદની શક્યતા</string>
+    <string name="ai_farm_advisory_title">🌾 AI કૃષિ સલાહ</string>
+    <string name="quick_ask_ai">WeatherGPT ને પૂછો</string>
+
+    <string name="chat_title">WeatherGPT</string>
+    <string name="chat_subtitle">તમારા AI હવામાન સહાયક</string>
+    <string name="chat_input_hint">હવામાન વિશે પૂછો...</string>
+    <string name="chat_send">મોકલો</string>
+
+    <string name="suggest_umbrella">☔ શું આજે વરસાદ પડશે?</string>
+    <string name="suggest_irrigate">🌾 શું આજે પાકને પાણી આપવું જોઈએ?</string>
+
+    <string name="forecast_title">૭ દિવસની આગાહી</string>
+    <string name="alerts_title">હવામાન ચેતવણીઓ</string>
+    <string name="profile_title">સેટિંગ્સ</string>
+    <string name="btn_retry">ફરી પ્રયાસ કરો</string>
+</resources>

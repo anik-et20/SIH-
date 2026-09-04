@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DisasterGuard AI</string>
+    <string name="app_tagline">Disaster Management &amp; Severe Weather Intelligence.</string>
+    <string name="app_description">Your emergency disaster management and real-time weather platform</string>
+
+    <!-- Navigation Tabs -->
+    <string name="nav_home">Overview</string>
+    <string name="nav_chat">Ask AI HQ</string>
+    <string name="nav_forecast">Radar &amp; Risk</string>
+    <string name="nav_alerts">Disaster Alerts</string>
+    <string name="nav_profile">Emergency Profile</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">DisasterGuard AI</string>
+    <string name="onboarding_desc_1">Your intelligent emergency disaster management companion powered by AI, tailored for NDRF response, citizen evacuation, and flood protection.</string>
+    <string name="btn_get_started">Get Started</string>
+    
+    <string name="onboarding_title_2">Know the Disaster Risk Around You</string>
+    <string name="onboarding_desc_2">Get hyper-local, accurate weather forecasts, real-time cyclone warnings, and flood alerts based on your location.</string>
+    <string name="btn_allow_location">Allow Location</string>
+    <string name="btn_skip">Skip for now</string>
+    
+    <string name="onboarding_title_3">Choose your language</string>
+    <string name="onboarding_desc_3">DisasterGuard AI responds in your regional language with natural pure Hindi voice read-aloud support.</string>
+    
+    <string name="onboarding_title_4">How will you use DisasterGuard?</string>
+    <string name="onboarding_desc_4">Select your operational disaster role to receive tailored AI insights and advisories.</string>
+    <string name="btn_continue">Continue</string>
+
+    <!-- Personas / Operational Roles -->
+    <string name="persona_responder">NDRF Responder 🚨</string>
+    <string name="persona_responder_desc">Tactical flood rescue, road blockages &amp; squad command</string>
+    <string name="persona_citizen">Citizen Safety 🆘</string>
+    <string name="persona_citizen_desc">Evacuation routes, shelter locations &amp; emergency survival</string>
+    <string name="persona_farmer">Agricultural Disaster 🌾</string>
+    <string name="persona_farmer_desc">Crop submergence, livestock protection &amp; storm damage</string>
+    <string name="persona_admin">Disaster Admin 🏛️</string>
+    <string name="persona_admin_desc">Urban flood mitigation, power grid &amp; dam water control</string>
+
+    <!-- Languages -->
+    <string name="lang_en">English</string>
+    <string name="lang_hi">हिंदी (Hindi)</string>
+    <string name="lang_ta">தமிழ் (Tamil)</string>
+    <string name="lang_te">తెలుగు (Telugu)</string>
+    <string name="lang_bn">বাংলা (Bengali)</string>
+    <string name="lang_mr">मराठी (Marathi)</string>
+    <string name="lang_gu">ગુજરાતી (Gujarati)</string>
+
+    <!-- Home / Overview Screen -->
+    <string name="home_updated_just_now">Updated a few minutes ago</string>
+    <string name="home_feels_like">Feels like %s</string>
+    <string name="metric_humidity">Humidity</string>
+    <string name="metric_wind">Wind Speed</string>
+    <string name="metric_rain_prob">Precipitation Surge</string>
+    <string name="metric_uv_index">Disaster Risk Index</string>
+    <string name="ai_insight_title">DISASTER COMMAND INSIGHT</string>
+    <string name="ai_farm_advisory_title">🌾 AGRI DISASTER ADVISORY</string>
+    <string name="ai_commute_advisory_title">🚨 NDRF RESCUE COMMAND</string>
+    <string name="ai_aviation_advisory_title">🏛️ INFRASTRUCTURE COMMAND</string>
+    <string name="ai_outdoor_advisory_title">🆘 CITIZEN EVACUATION GUIDE</string>
+    <string name="quick_ask_ai">Ask Disaster AI HQ</string>
+    <string name="soil_guidance_title">Flood &amp; Disaster Guidance</string>
+    <string name="soil_sensor_note">Real-time weather &amp; flood risk monitoring active</string>
+
+    <!-- Ask AI Screen -->
+    <string name="chat_title">DisasterGuard AI</string>
+    <string name="chat_subtitle">Your Emergency Disaster HQ Assistant</string>
+    <string name="chat_input_hint">Ask about disaster risk, evacuation, or weather...</string>
+    <string name="chat_listening">🔴 Listening...</string>
+    <string name="chat_you_said">You said: %s</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_tts_play">Listen to advisory</string>
+    
+    <!-- Suggested Prompts -->
+    <string name="suggest_umbrella">🌊 What are the flood evacuation routes?</string>
+    <string name="suggest_irrigate">🚨 Check NDRF rescue protocols</string>
+    <string name="suggest_hotter">🌀 Is a cyclone alert active today?</string>
+    <string name="suggest_travel">🎒 How to prepare 72-hour survival kit?</string>
+
+    <!-- Forecast & Risk Screen -->
+    <string name="forecast_title">7-Day Disaster Forecast &amp; Risk</string>
+    <string name="sun_details_title">Day &amp; Surge Details</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="precipitation_sum">Total Precipitation</string>
+
+    <!-- Alerts Screen -->
+    <string name="alerts_title">Severe Disaster Warnings</string>
+    <string name="no_alerts_title">Normal Conditions</string>
+    <string name="no_alerts_desc">No severe weather or cyclone warnings active for your region at this time.</string>
+    <string name="alert_recommended_actions">Recommended Actions:</string>
+    <string name="alert_expected_conditions">Expected Conditions:</string>
+    <string name="alert_updated_time">Updated %s</string>
+
+    <!-- Profile & Settings -->
+    <string name="profile_title">Emergency Profile &amp; Settings</string>
+    <string name="setting_location">Location / Region</string>
+    <string name="setting_language">Language</string>
+    <string name="setting_persona">Disaster Role</string>
+    <string name="setting_units">Temperature Units</string>
+    <string name="setting_voice">Voice Read-Aloud (Hindi TTS)</string>
+    <string name="setting_notifications">Disaster Push Notifications</string>
+    <string name="setting_backend_url">Backend Server URL</string>
+    <string name="about_title">About DisasterGuard AI</string>
+    <string name="about_version">Version 2.5.0 (Disaster Management Ed.)</string>
+    <string name="unit_celsius">Celsius (°C)</string>
+    <string name="unit_fahrenheit">Fahrenheit (°F)</string>
+
+    <!-- General States -->
+    <string name="state_loading">Loading real-time disaster metrics...</string>
+    <string name="state_error_title">Unable to update weather</string>
+    <string name="state_error_desc">Check your connection and try again.</string>
+    <string name="btn_retry">Retry</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+</resources>

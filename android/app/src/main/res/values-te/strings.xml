@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherGPT</string>
+    <string name="app_tagline">మిమ్మల్ని అర్థం చేసుకునే వాతావరణం.</string>
+    <string name="nav_home">హోమ్</string>
+    <string name="nav_chat">AI ని అడగండి</string>
+    <string name="nav_forecast">సూచన</string>
+    <string name="nav_alerts">హెచ్చరికలు</string>
+    <string name="nav_profile">ప్రొఫైల్</string>
+
+    <string name="btn_get_started">ప్రారంభించండి</string>
+    <string name="btn_allow_location">లొకేషన్ అనుమతించండి</string>
+    <string name="btn_continue">కొనసాగించండి</string>
+
+    <string name="persona_farmer">వ్యవసాయం &amp; రైతు</string>
+    <string name="persona_commuter">రోజువారీ ప్రయాణికుడు</string>
+    <string name="persona_aviation">విమానయానం</string>
+    <string name="persona_outdoor">అవుట్‌డోర్ క్రీడలు</string>
+
+    <string name="metric_humidity">తేమ</string>
+    <string name="metric_wind">గాలి</string>
+    <string name="metric_rain_prob">వర్షం సంభావ్యత</string>
+    <string name="ai_farm_advisory_title">🌾 AI వ్యవసాయ సలహా</string>
+    <string name="quick_ask_ai">WeatherGPT ని అడగండి</string>
+
+    <string name="chat_title">WeatherGPT</string>
+    <string name="chat_subtitle">మీ AI వాతావరణ సహాయకుడు</string>
+    <string name="chat_input_hint">వాతావరణం గురించి అడగండి...</string>
+    <string name="chat_send">పంపండి</string>
+
+    <string name="suggest_umbrella">☔ ఈ రోజు వర్షం పడుతుందా?</string>
+    <string name="suggest_irrigate">🌾 ఈ రోజు పంటలకు నీరు పెట్టవచ్చా?</string>
+
+    <string name="forecast_title">7 రోజుల సూచన</string>
+    <string name="alerts_title">వాతావరణ హెచ్చరికలు</string>
+    <string name="profile_title">సెట్టింగ్‌లు</string>
+    <string name="btn_retry">మళ్లీ ప్రయత్నించండి</string>
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base Theme -->
+    <style name="Theme.WeatherGPT" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/accent_cyan</item>
+        <item name="colorPrimaryVariant">@color/accent_blue</item>
+        <item name="colorOnPrimary">@color/text_dark</item>
+        <item name="colorSecondary">@color/accent_farmer_light</item>
+        <item name="colorOnSecondary">@color/text_dark</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_panel</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+    </style>
+
+    <!-- Splash Theme -->
+    <style name="Theme.WeatherGPT.Splash" parent="Theme.WeatherGPT">
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+    </style>
+
+    <!-- Card Styles -->
+    <style name="WeatherCard">
+        <item name="android:background">@drawable/bg_card_dark</item>
+        <item name="android:padding">@dimen/spacing_lg</item>
+    </style>
+
+    <style name="WeatherCard.Highlight">
+        <item name="android:background">@drawable/bg_card_highlight</item>
+    </style>
+
+    <style name="WeatherCard.Farmer">
+        <item name="android:background">@drawable/bg_card_farmer</item>
+    </style>
+</resources>

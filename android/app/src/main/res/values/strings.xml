@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherGPT</string>
+    <string name="app_tagline">Weather that understands you.</string>
+    <string name="app_description">Your intelligent weather companion</string>
+
+    <!-- Navigation Tabs -->
+    <string name="nav_home">Home</string>
+    <string name="nav_chat">Ask AI</string>
+    <string name="nav_forecast">Forecast</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">WeatherGPT</string>
+    <string name="onboarding_desc_1">Your intelligent weather companion powered by AI, tailored for everyday decisions and agriculture.</string>
+    <string name="btn_get_started">Get Started</string>
+    
+    <string name="onboarding_title_2">Know the weather around you</string>
+    <string name="onboarding_desc_2">Get hyper-local, accurate weather forecasts and real-time severe weather warnings based on your location.</string>
+    <string name="btn_allow_location">Allow Location</string>
+    <string name="btn_skip">Skip for now</string>
+    
+    <string name="onboarding_title_3">Choose your language</string>
+    <string name="onboarding_desc_3">WeatherGPT understands and responds in your regional language with natural voice support.</string>
+    
+    <string name="onboarding_title_4">How will you use WeatherGPT?</string>
+    <string name="onboarding_desc_4">Select your primary role to receive tailored AI insights and advisories.</string>
+    <string name="btn_continue">Continue</string>
+
+    <!-- Personas -->
+    <string name="persona_farmer">Farming &amp; Agriculture</string>
+    <string name="persona_farmer_desc">Crop advisories, irrigation timing &amp; weather protection</string>
+    <string name="persona_commuter">Daily Commuter</string>
+    <string name="persona_commuter_desc">Rain timings, umbrella prep &amp; traffic hazards</string>
+    <string name="persona_aviation">Aviation &amp; Travel</string>
+    <string name="persona_aviation_desc">Visibility, flight delays &amp; storm warnings</string>
+    <string name="persona_outdoor">Outdoor &amp; Sports</string>
+    <string name="persona_outdoor_desc">Heat index, UV safety &amp; activity suitability</string>
+
+    <!-- Languages -->
+    <string name="lang_en">English</string>
+    <string name="lang_hi">हिंदी (Hindi)</string>
+    <string name="lang_ta">தமிழ் (Tamil)</string>
+    <string name="lang_te">తెలుగు (Telugu)</string>
+    <string name="lang_bn">বাংলা (Bengali)</string>
+    <string name="lang_mr">मराठी (Marathi)</string>
+    <string name="lang_gu">ગુજરાતી (Gujarati)</string>
+
+    <!-- Home Screen -->
+    <string name="home_updated_just_now">Updated a few minutes ago</string>
+    <string name="home_feels_like">Feels like %s</string>
+    <string name="metric_humidity">Humidity</string>
+    <string name="metric_wind">Wind</string>
+    <string name="metric_rain_prob">Rain Probability</string>
+    <string name="metric_uv_index">UV Index</string>
+    <string name="ai_insight_title">AI INSIGHT</string>
+    <string name="ai_farm_advisory_title">🌾 AI FARM ADVISORY</string>
+    <string name="ai_commute_advisory_title">🚗 COMMUTE INSIGHT</string>
+    <string name="ai_aviation_advisory_title">✈️ AVIATION INSIGHT</string>
+    <string name="ai_outdoor_advisory_title">🏃 OUTDOOR INSIGHT</string>
+    <string name="quick_ask_ai">Ask WeatherGPT</string>
+    <string name="soil_guidance_title">Agricultural Guidance</string>
+    <string name="soil_sensor_note">Weather-based irrigation &amp; field guidance active</string>
+
+    <!-- Ask AI Screen -->
+    <string name="chat_title">WeatherGPT</string>
+    <string name="chat_subtitle">Your AI Weather Assistant</string>
+    <string name="chat_input_hint">Ask about the weather...</string>
+    <string name="chat_listening">🔴 Listening...</string>
+    <string name="chat_you_said">You said: %s</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_tts_play">Listen to advisory</string>
+    
+    <!-- Suggested Prompts -->
+    <string name="suggest_umbrella">☔ Will it rain today?</string>
+    <string name="suggest_irrigate">🌾 Should I irrigate my crops?</string>
+    <string name="suggest_hotter">🌡️ Will it be hotter tomorrow?</string>
+    <string name="suggest_travel">🚗 Is it safe to travel today?</string>
+
+    <!-- Forecast Screen -->
+    <string name="forecast_title">7-Day Forecast</string>
+    <string name="sun_details_title">Sun &amp; Day Details</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="precipitation_sum">Total Precipitation</string>
+
+    <!-- Alerts Screen -->
+    <string name="alerts_title">Severe Weather Alerts</string>
+    <string name="no_alerts_title">All Clear</string>
+    <string name="no_alerts_desc">No severe weather warnings active for your region at this time.</string>
+    <string name="alert_recommended_actions">Recommended Actions:</string>
+    <string name="alert_expected_conditions">Expected Conditions:</string>
+    <string name="alert_updated_time">Updated %s</string>
+
+    <!-- Profile & Settings -->
+    <string name="profile_title">Profile &amp; Settings</string>
+    <string name="setting_location">Location</string>
+    <string name="setting_language">Language</string>
+    <string name="setting_persona">Persona Profile</string>
+    <string name="setting_units">Temperature Units</string>
+    <string name="setting_voice">Voice Read-Aloud</string>
+    <string name="setting_notifications">Weather Alerts Notifications</string>
+    <string name="setting_backend_url">Backend Server URL</string>
+    <string name="about_title">About WeatherGPT</string>
+    <string name="about_version">Version 2.0.0 (SIH Edition)</string>
+    <string name="unit_celsius">Celsius (°C)</string>
+    <string name="unit_fahrenheit">Fahrenheit (°F)</string>
+
+    <!-- General States -->
+    <string name="state_loading">Loading real-time weather...</string>
+    <string name="state_error_title">Unable to update weather</string>
+    <string name="state_error_desc">Check your connection and try again.</string>
+    <string name="btn_retry">Retry</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+</resources>

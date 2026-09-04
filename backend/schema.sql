@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS weather_cache (
+    location_name VARCHAR(255) PRIMARY KEY,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    weather_data JSONB NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

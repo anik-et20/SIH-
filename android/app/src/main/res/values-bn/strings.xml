@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherGPT</string>
+    <string name="app_tagline">আবহাওয়া যা আপনাকে বোঝে।</string>
+    <string name="nav_home">হোম</string>
+    <string name="nav_chat">AI জিজ্ঞাসা করুন</string>
+    <string name="nav_forecast">পূর্বাভাস</string>
+    <string name="nav_alerts">সতর্কতা</string>
+    <string name="nav_profile">প্রোফাইল</string>
+
+    <string name="btn_get_started">শুরু করুন</string>
+    <string name="btn_allow_location">অবস্থান অনুমতি দিন</string>
+    <string name="btn_continue">চালিয়ে যান</string>
+
+    <string name="persona_farmer">কৃষি ও কৃষক</string>
+    <string name="persona_commuter">দৈনিক যাত্রী</string>
+    <string name="persona_aviation">বিমান চলাচল</string>
+    <string name="persona_outdoor">বহিরঙ্গন খেলাধুলা</string>
+
+    <string name="metric_humidity">আর্দ্রতা</string>
+    <string name="metric_wind">বাতাস</string>
+    <string name="metric_rain_prob">বৃষ্টির সম্ভাবনা</string>
+    <string name="ai_farm_advisory_title">🌾 AI কৃষি পরামর্শ</string>
+    <string name="quick_ask_ai">WeatherGPT-কে জিজ্ঞাসা করুন</string>
+
+    <string name="chat_title">WeatherGPT</string>
+    <string name="chat_subtitle">আপনার AI আবহাওয়া সহকারী</string>
+    <string name="chat_input_hint">আবহাওয়া সম্পর্কে জিজ্ঞাসা করুন...</string>
+    <string name="chat_send">পাঠান</string>
+
+    <string name="suggest_umbrella">☔ আজ কি বৃষ্টি হবে?</string>
+    <string name="suggest_irrigate">🌾 আজ কি ফসলে সেচ দেওয়া উচিত?</string>
+
+    <string name="forecast_title">৭ দিনের আবহাওয়ার পূর্বাভাস</string>
+    <string name="alerts_title">আবহাওয়ার সতর্কতা</string>
+    <string name="profile_title">সেটিংস</string>
+    <string name="btn_retry">পুনরায় চেষ্টা করুন</string>
+</resources>
