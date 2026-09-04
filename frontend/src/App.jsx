@@ -4,6 +4,8 @@ import GoogleSearchBar from './GoogleSearchBar';
 import DisasterHelplines from './DisasterHelplines';
 import EmergencySOSModal from './EmergencySOSModal';
 import SurvivalKitChecklist from './SurvivalKitChecklist';
+import SachetAlertBanner from './SachetAlertBanner';
+import AuthoritySitRepModal from './AuthoritySitRepModal';
 
 // WMO Disaster & Weather Icon Mapping
 const WeatherIcon = ({ condition }) => {
@@ -55,6 +57,7 @@ export default function App() {
   // Active Navigation Tab for Mobile & Multi-View
   const [activeTab, setActiveTab] = useState('overview');
   const [sosModalOpen, setSosModalOpen] = useState(false);
+  const [sitrepModalOpen, setSitrepModalOpen] = useState(false);
 
   const [currentWeather, setCurrentWeather] = useState(null);
   const [alerts, setAlerts] = useState([]);
@@ -455,6 +458,18 @@ export default function App() {
               🎯 GPS Location
             </button>
 
+            {/* NDMA / SDMA Authority SitRep Dashboard Trigger */}
+            <button
+              onClick={() => setSitrepModalOpen(true)}
+              style={{
+                background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.4)',
+                padding: '8px 14px', borderRadius: '12px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
+                boxShadow: '0 0 15px rgba(56, 189, 248, 0.15)'
+              }}
+            >
+              🏛️ Authority SitRep
+            </button>
+
             {/* Google-like Autocomplete Search Bar Component */}
             <GoogleSearchBar
               currentLocation={location}
@@ -550,7 +565,10 @@ export default function App() {
         </div>
       )}
 
-      {/* Disaster Role Selector Bar */}
+      {/* Official NDMA SACHET CAP Warning Banner Component */}
+      <div style={{ maxWidth: '1280px', margin: '16px auto 0 auto', padding: '0 20px', width: '100%' }}>
+        <SachetAlertBanner location={location} />
+      </div>
       <div style={{ background: 'rgba(15, 23, 42, 0.6)', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '10px 20px' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '10px', overflowX: 'auto' }}>
           <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px', whitespace: 'nowrap' }}>
@@ -886,6 +904,13 @@ export default function App() {
         onClose={() => setSosModalOpen(false)}
         currentLocation={location}
         coords={coords}
+      />
+
+      {/* NDMA / SDMA Authority Situation Report (SitRep) Modal */}
+      <AuthoritySitRepModal
+        isOpen={sitrepModalOpen}
+        onClose={() => setSitrepModalOpen(false)}
+        location={location}
       />
 
       {/* Mobile Bottom Navigation Bar */}

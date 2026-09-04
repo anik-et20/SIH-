@@ -16,6 +16,12 @@ from weather_service import get_weather, get_weather_by_coords
 from llm_service import generate_weather_response, LANGUAGE_NAMES
 from rag_service import search_weather_knowledge
 from sarvam_service import generate_sarvam_tts
+from services.sachet_service import fetch_sachet_cap_alerts
+from risk.scoring import compute_composite_disaster_risk
+from gis.affected_area import calculate_affected_area_impact
+from services.authority_service import generate_authority_sitrep
+from services.climate_service import get_historical_climate_trends, get_farmer_crop_advisory
+from services.transparency_service import generate_transparency_badge, create_audit_provenance_trace
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("weathergpt.main")
@@ -236,6 +242,115 @@ async def get_helplines():
             {"name": "Fire Services", "number": "101"}
         ]
     }
+
+@app.get("/api/alerts/sachet")
+async def get_sachet_alerts(location: Optional[str] = Query(None, description="City or district name")):
+    """Official NDMA SACHET Common Alerting Protocol (CAP) emergency warnings endpoint."""
+    try:
+        res = await fetch_sachet_cap_alerts(location_query=location or "")
+        return res
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/risk/evaluate")
+async def evaluate_risk(
+    location: str = Query("Mumbai"),
+    rainfall_24h_mm: float = Query(85.0),
+    wind_speed_kmh: float = Query(35.0),
+    high_tide_m: float = Query(4.2),
+    rain_days: int = Query(1)
+):
+    """Explainable Multi-Hazard Risk Scoring endpoint."""
+    try:
+        return compute_composite_disaster_risk(
+            location_name=location,
+            rainfall_24h_mm=rainfall_24h_mm,
+            wind_speed_kmh=wind_speed_kmh,
+            high_tide_m=high_tide_m,
+            rain_days=rain_days
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/gis/affected-area")
+async def get_affected_area(
+    location: str = Query("Mumbai"),
+    lat: float = Query(19.0760),
+    lon: float = Query(72.8777),
+    radius_km: float = Query(15.0)
+):
+    """GIS & Spatial Geodesic Affected-Area & Infrastructure Impact Analysis endpoint."""
+    try:
+        return calculate_affected_area_impact(
+            location_name=location,
+            center_lat=lat,
+            center_lon=lon,
+            impact_radius_km=radius_km
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/authority/sitrep")
+async def get_authority_sitrep(
+    location: str = Query("Mumbai"),
+    lat: float = Query(19.0760),
+    lon: float = Query(72.8777),
+    rainfall_24h_mm: float = Query(120.0)
+):
+    """Official NDMA / SDMA Situation Report (SitRep) generator endpoint for disaster controllers."""
+    try:
+        return await generate_authority_sitrep(
+            location_name=location,
+            lat=lat,
+            lon=lon,
+            rainfall_24h_mm=rainfall_24h_mm
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/climate/trend")
+async def get_climate_trend_api(
+    location: str = Query("Punjab"),
+    metric: str = Query("precipitation")
+):
+    """Historical 30-Year Climate Trend & Anomaly Analytics Endpoint."""
+    try:
+        return get_historical_climate_trends(location_name=location, metric=metric)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/advisory/farmer")
+async def get_farmer_advisory_api(
+    location: str = Query("Punjab"),
+    crop: str = Query("rice"),
+    rainfall_24h_mm: float = Query(75.0)
+):
+    """Secondary Agricultural Crop Advisory Endpoint for Farmers."""
+    try:
+        return get_farmer_crop_advisory(location_name=location, crop=crop, current_rainfall_mm=rainfall_24h_mm)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/transparency/verify")
+async def verify_transparency_api(
+    source_type: str = Query("OFFICIAL_GOVERNMENT_IMD"),
+    provider: str = Query("India Meteorological Department (IMD)")
+):
+    """Source Transparency Badge & Provenance Audit Endpoint."""
+    try:
+        badge = generate_transparency_badge(source_type=source_type, provider_name=provider)
+        audit = create_audit_provenance_trace(
+            query_id="WX-2026-9011",
+            location="India Regional Meteorological Sector",
+            pipeline_steps=["Geo-Resolution", "IMD Station Telemetry", "NDMA SACHET Verification", "Physics Risk Matrix"],
+            data_sources_used=[provider, "NDMA SACHET CAP Feed", "Open-Meteo GFS"]
+        )
+        return {
+            "trust_badge": badge,
+            "provenance_audit": audit
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.websocket("/ws/alerts")
 async def websocket_alerts(websocket: WebSocket):

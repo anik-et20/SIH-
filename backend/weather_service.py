@@ -10,6 +10,9 @@ from calc_service import c_to_f, kmh_to_mph
 from geo_service import resolve_location
 from date_service import resolve_date_string
 from database import get_cached_weather, set_cached_weather
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "services"))
+from services.imd_service import fetch_imd_weather_observation, fetch_imd_district_alerts
 
 logger = logging.getLogger("weathergpt.weather_service")
 
@@ -51,65 +54,54 @@ async def fetch_current_weather(
         "timezone": loc.timezone if loc.timezone != "auto" else "auto"
     }
 
-    data = None
-    for attempt in range(2):
-        try:
-            async with httpx.AsyncClient(verify=False, timeout=15.0) as client:
-                resp = await client.get(FORECAST_URL, params=params)
-                if resp.status_code == 200:
-                    data = resp.json()
-                    break
-                elif resp.status_code != 200 and attempt == 1:
-                    raise RuntimeError(f"Open-Meteo API returned status {resp.status_code}")
-        except Exception as e:
-            if attempt == 1:
-                raise
+    async with httpx.AsyncClient(verify=False, timeout=10.0) as client:
+        resp = await client.get(FORECAST_URL, params=params)
+        if resp.status_code != 200:
+            raise RuntimeError(f"Open-Meteo API returned status {resp.status_code}")
+        
+        data = resp.json()
+        curr = data.get("current")
+        if not curr:
+            raise ValueError("Incomplete or missing current weather data in API response.")
 
-    if not data:
-        raise RuntimeError("Failed to retrieve current weather from Open-Meteo.")
+        temp_c = float(curr.get("temperature_2m", 0.0))
+        temp_f = c_to_f(temp_c)
+        app_temp_c = float(curr.get("apparent_temperature", temp_c))
+        humidity = int(curr.get("relative_humidity_2m", 0))
+        precip = float(curr.get("precipitation", 0.0))
+        w_code = int(curr.get("weather_code", 0))
+        wind_kmh = float(curr.get("wind_speed_10m", 0.0))
+        wind_mph = kmh_to_mph(wind_kmh)
+        wind_deg = curr.get("wind_direction_10m")
+        gusts = curr.get("wind_gusts_10m")
+        pressure = curr.get("surface_pressure")
+        is_day = bool(curr.get("is_day", 1))
 
-    curr = data.get("current")
-    if not curr:
-        raise ValueError("Incomplete or missing current weather data in API response.")
+        # Get first hour precip probability if available
+        hourly_probs = data.get("hourly", {}).get("precipitation_probability", [])
+        precip_prob = hourly_probs[0] if hourly_probs else 0
+        hourly_uv = data.get("hourly", {}).get("uv_index", [])
+        uv = hourly_uv[0] if hourly_uv else None
 
-    temp_c = float(curr.get("temperature_2m", 0.0))
-    temp_f = c_to_f(temp_c)
-    app_temp_c = float(curr.get("apparent_temperature", temp_c))
-    humidity = int(curr.get("relative_humidity_2m", 0))
-    precip = float(curr.get("precipitation", 0.0))
-    w_code = int(curr.get("weather_code", 0))
-    wind_kmh = float(curr.get("wind_speed_10m", 0.0))
-    wind_mph = kmh_to_mph(wind_kmh)
-    wind_deg = curr.get("wind_direction_10m")
-    gusts = curr.get("wind_gusts_10m")
-    pressure = curr.get("surface_pressure")
-    is_day = bool(curr.get("is_day", 1))
-
-    # Get first hour precip probability if available
-    hourly_probs = data.get("hourly", {}).get("precipitation_probability", [])
-    precip_prob = hourly_probs[0] if hourly_probs else 0
-    hourly_uv = data.get("hourly", {}).get("uv_index", [])
-    uv = hourly_uv[0] if hourly_uv else None
-
-    return CanonicalCurrentWeather(
-        location=loc.display_name,
-        date=date_info.date_str,
-        temperature_c=temp_c,
-        temperature_f=temp_f,
-        apparent_temperature_c=app_temp_c,
-        humidity_percent=humidity,
-        precipitation_mm=precip,
-        precipitation_probability=precip_prob,
-        weather_code=w_code,
-        condition=get_wmo_text(w_code),
-        wind_speed_kmh=wind_kmh,
-        wind_speed_mph=wind_mph,
-        wind_direction_deg=wind_deg,
-        wind_gusts_kmh=gusts,
-        pressure_hpa=pressure,
-        uv_index=uv,
-        is_day=is_day
-    )
+        return CanonicalCurrentWeather(
+            location=loc.display_name,
+            date=date_info.date_str,
+            temperature_c=temp_c,
+            temperature_f=temp_f,
+            apparent_temperature_c=app_temp_c,
+            humidity_percent=humidity,
+            precipitation_mm=precip,
+            precipitation_probability=precip_prob,
+            weather_code=w_code,
+            condition=get_wmo_text(w_code),
+            wind_speed_kmh=wind_kmh,
+            wind_speed_mph=wind_mph,
+            wind_direction_deg=wind_deg,
+            wind_gusts_kmh=gusts,
+            pressure_hpa=pressure,
+            uv_index=uv,
+            is_day=is_day
+        )
 
 async def fetch_hourly_forecast(
     loc: CanonicalLocation,
@@ -125,47 +117,67 @@ async def fetch_hourly_forecast(
         "forecast_days": min(14, max(1, date_info.day_offset + 2)) if date_info.day_offset >= 0 else 1
     }
 
-    data = None
-    for attempt in range(2):
-        try:
-            async with httpx.AsyncClient(verify=False, timeout=15.0) as client:
-                resp = await client.get(FORECAST_URL, params=params)
-                if resp.status_code == 200:
-                    data = resp.json()
-                    break
-                elif resp.status_code != 200 and attempt == 1:
-                    raise RuntimeError(f"Open-Meteo API error: status {resp.status_code}")
-        except Exception as e:
-            if attempt == 1:
-                raise
+    async with httpx.AsyncClient(verify=False, timeout=10.0) as client:
+        resp = await client.get(FORECAST_URL, params=params)
+        if resp.status_code != 200:
+            raise RuntimeError(f"Open-Meteo API error: status {resp.status_code}")
+        
+        data = resp.json()
+        h_data = data.get("hourly")
+        if not h_data or "time" not in h_data:
+            raise ValueError("Missing hourly dataset in weather response.")
 
-    if not data:
-        raise RuntimeError("Failed to retrieve hourly forecast from Open-Meteo.")
+        times = h_data.get("time", [])
+        temps = h_data.get("temperature_2m", [])
+        app_temps = h_data.get("apparent_temperature", [])
+        humidities = h_data.get("relative_humidity_2m", [])
+        precip_probs = h_data.get("precipitation_probability", [])
+        precips = h_data.get("precipitation", [])
+        codes = h_data.get("weather_code", [])
+        winds = h_data.get("wind_speed_10m", [])
+        uvs = h_data.get("uv_index", [])
 
-    h_data = data.get("hourly")
-    if not h_data or "time" not in h_data:
-        raise ValueError("Missing hourly dataset in weather response.")
+        slots: List[CanonicalHourlySlot] = []
+        target_date_prefix = date_info.date_str
 
-    times = h_data.get("time", [])
-    temps = h_data.get("temperature_2m", [])
-    app_temps = h_data.get("apparent_temperature", [])
-    humidities = h_data.get("relative_humidity_2m", [])
-    precip_probs = h_data.get("precipitation_probability", [])
-    precips = h_data.get("precipitation", [])
-    codes = h_data.get("weather_code", [])
-    winds = h_data.get("wind_speed_10m", [])
-    uvs = h_data.get("uv_index", [])
+        # Filter for slots matching the target date or starting from target
+        for idx, t in enumerate(times):
+            if date_info.day_offset == 0:
+                if len(slots) < hours:
+                    c = codes[idx] if idx < len(codes) else 0
+                    slots.append(CanonicalHourlySlot(
+                        time=t,
+                        temperature_c=temps[idx] if idx < len(temps) else 0.0,
+                        apparent_temperature_c=app_temps[idx] if idx < len(app_temps) else 0.0,
+                        humidity_percent=int(humidities[idx]) if idx < len(humidities) else 0,
+                        precipitation_probability=int(precip_probs[idx]) if idx < len(precip_probs) else 0,
+                        precipitation_mm=precips[idx] if idx < len(precips) else 0.0,
+                        weather_code=c,
+                        condition=get_wmo_text(c),
+                        wind_speed_kmh=winds[idx] if idx < len(winds) else 0.0,
+                        uv_index=uvs[idx] if idx < len(uvs) else None
+                    ))
+            else:
+                if t.startswith(target_date_prefix) and len(slots) < hours:
+                    c = codes[idx] if idx < len(codes) else 0
+                    slots.append(CanonicalHourlySlot(
+                        time=t,
+                        temperature_c=temps[idx] if idx < len(temps) else 0.0,
+                        apparent_temperature_c=app_temps[idx] if idx < len(app_temps) else 0.0,
+                        humidity_percent=int(humidities[idx]) if idx < len(humidities) else 0,
+                        precipitation_probability=int(precip_probs[idx]) if idx < len(precip_probs) else 0,
+                        precipitation_mm=precips[idx] if idx < len(precips) else 0.0,
+                        weather_code=c,
+                        condition=get_wmo_text(c),
+                        wind_speed_kmh=winds[idx] if idx < len(winds) else 0.0,
+                        uv_index=uvs[idx] if idx < len(uvs) else None
+                    ))
 
-    slots: List[CanonicalHourlySlot] = []
-    target_date_prefix = date_info.date_str
-
-    # Filter for slots matching the target date or starting from target
-    for idx, t in enumerate(times):
-        if date_info.day_offset == 0:
-            if len(slots) < hours:
+        if not slots and times:
+            for idx in range(min(hours, len(times))):
                 c = codes[idx] if idx < len(codes) else 0
                 slots.append(CanonicalHourlySlot(
-                    time=t,
+                    time=times[idx],
                     temperature_c=temps[idx] if idx < len(temps) else 0.0,
                     apparent_temperature_c=app_temps[idx] if idx < len(app_temps) else 0.0,
                     humidity_percent=int(humidities[idx]) if idx < len(humidities) else 0,
@@ -176,27 +188,12 @@ async def fetch_hourly_forecast(
                     wind_speed_kmh=winds[idx] if idx < len(winds) else 0.0,
                     uv_index=uvs[idx] if idx < len(uvs) else None
                 ))
-        else:
-            if t.startswith(target_date_prefix) and len(slots) < hours:
-                c = codes[idx] if idx < len(codes) else 0
-                slots.append(CanonicalHourlySlot(
-                    time=t,
-                    temperature_c=temps[idx] if idx < len(temps) else 0.0,
-                    apparent_temperature_c=app_temps[idx] if idx < len(app_temps) else 0.0,
-                    humidity_percent=int(humidities[idx]) if idx < len(humidities) else 0,
-                    precipitation_probability=int(precip_probs[idx]) if idx < len(precip_probs) else 0,
-                    precipitation_mm=precips[idx] if idx < len(precips) else 0.0,
-                    weather_code=c,
-                    condition=get_wmo_text(c),
-                    wind_speed_kmh=winds[idx] if idx < len(winds) else 0.0,
-                    uv_index=uvs[idx] if idx < len(uvs) else None
-                ))
 
-    return CanonicalHourlyForecast(
-        location=loc.display_name,
-        date=date_info.date_str,
-        slots=slots
-    )
+        return CanonicalHourlyForecast(
+            location=loc.display_name,
+            date=date_info.date_str,
+            slots=slots
+        )
 
 async def fetch_daily_forecast(
     loc: CanonicalLocation,
@@ -328,23 +325,18 @@ async def fetch_air_quality(loc: CanonicalLocation) -> CanonicalAirQuality:
         )
 
 async def fetch_weather_alerts(loc: CanonicalLocation) -> CanonicalAlerts:
-    """
-    Evaluates multi-hazard risk thresholds (heat, heavy rain, gale-force winds, thunderstorms, AQI)
-    and produces structured canonical alerts.
-    """
     alerts_list: List[CanonicalAlertItem] = []
     highest_severity = "low"
 
     try:
         current_data = await fetch_current_weather(loc, resolve_date_string("today"))
         
-        # 1. Extreme Heat Alert
         if current_data.temperature_c >= 42.0:
             alerts_list.append(CanonicalAlertItem(
                 severity="emergency",
                 title="Extreme Heatwave Emergency Warning",
                 hazard_type="extreme_heat",
-                description=f"Dangerous heat index with ambient temperature of {current_data.temperature_c}°C. Severe heatstroke risk.",
+                description=f"Dangerous heat index with ambient temperature of {current_data.temperature_c}°C.",
                 recommended_actions=["Stay in air-conditioned environments", "Avoid direct sunlight 11 AM - 4 PM", "Drink electrolyte fluids"]
             ))
             highest_severity = "extreme"
@@ -353,33 +345,23 @@ async def fetch_weather_alerts(loc: CanonicalLocation) -> CanonicalAlerts:
                 severity="warning",
                 title="Severe Heat Advisory",
                 hazard_type="extreme_heat",
-                description=f"High temperature of {current_data.temperature_c}°C recorded. Strenuous outdoor labor is unsafe.",
+                description=f"High temperature of {current_data.temperature_c}°C recorded.",
                 recommended_actions=["Hydrate frequently", "Wear light loose cotton clothing", "Check on elderly family members"]
             ))
             if highest_severity in ["low", "moderate"]:
                 highest_severity = "high"
 
-        # 2. High Wind / Gale Alert
         if current_data.wind_speed_kmh >= 65.0:
             alerts_list.append(CanonicalAlertItem(
                 severity="warning",
                 title="Gale-Force Wind Warning",
                 hazard_type="high_wind",
-                description=f"Strong sustained winds of {current_data.wind_speed_kmh} km/h with high gust hazard. Risk of falling branches and power disruption.",
+                description=f"Strong sustained winds of {current_data.wind_speed_kmh} km/h with high gust hazard.",
                 recommended_actions=["Secure loose outdoor rooftop fixtures", "Avoid driving high-sided vehicles", "Stay clear of power lines"]
             ))
             if highest_severity in ["low", "moderate", "high"]:
                 highest_severity = "severe"
-        elif current_data.wind_speed_kmh >= 45.0:
-            alerts_list.append(CanonicalAlertItem(
-                severity="advisory",
-                title="Brisk Wind Advisory",
-                hazard_type="high_wind",
-                description=f"Wind speeds reaching {current_data.wind_speed_kmh} km/h.",
-                recommended_actions=["Take caution while cycling or walking near tall structures"]
-            ))
 
-        # 3. Thunderstorm / Heavy Precipitation Alert
         if current_data.weather_code in [95, 96, 99]:
             alerts_list.append(CanonicalAlertItem(
                 severity="warning",
@@ -424,7 +406,7 @@ async def fetch_weather_alerts(loc: CanonicalLocation) -> CanonicalAlerts:
     )
 
 # =====================================================================
-# BACKWARD COMPATIBLE WRAPPERS (for existing frontend and cache)
+# BACKWARD COMPATIBLE WRAPPERS (Integrated IMD Service Ingestion)
 # =====================================================================
 
 async def get_weather(pool, location: str, fetch_climate: bool = False) -> Tuple[Dict[str, Any], bool]:
@@ -438,18 +420,32 @@ async def get_weather(pool, location: str, fetch_climate: bool = False) -> Tuple
         logger.info(f"Serving weather for '{clean_location}' from cache.")
         return cached, True
 
-    # 2. Resolve Canonical Location
-    loc = await resolve_location(clean_location)
-    if loc.is_ambiguous:
-        raise ValueError(f"Ambiguous location '{clean_location}'. Candidates: {', '.join(loc.candidates)}")
+    # 2. Check Authoritative IMD Station Ingestion first
+    imd_data = await fetch_imd_weather_observation(clean_location)
+    if imd_data:
+        loc = await resolve_location(clean_location)
+        daily_obj = await fetch_daily_forecast(loc, days=7)
+        imd_data["daily"] = {
+            "time": [d.date for d in daily_obj.days],
+            "weather_code": [d.weather_code for d in daily_obj.days],
+            "temperature_2m_max": [d.temperature_max_c for d in daily_obj.days],
+            "temperature_2m_min": [d.temperature_min_c for d in daily_obj.days],
+            "precipitation_sum": [d.precipitation_sum_mm for d in daily_obj.days],
+            "sunrise": [d.sunrise for d in daily_obj.days],
+            "sunset": [d.sunset for d in daily_obj.days]
+        }
+        await set_cached_weather(pool, clean_location, loc.latitude, loc.longitude, imd_data)
+        return imd_data, False
 
-    # 3. Fetch canonical datasets
+    # 3. Resolve Canonical Location for Global Forecasts
+    loc = await resolve_location(clean_location)
     date_info = resolve_date_string("today")
     curr_obj = await fetch_current_weather(loc, date_info)
     daily_obj = await fetch_daily_forecast(loc, days=7)
     
-    # Build compatible dictionary matching existing frontend expectations
     weather_dict = {
+        "source": "Global Meteorological Sensor Network (Open-Meteo)",
+        "source_type": "WEATHERGPT_CANONICAL",
         "location_info": loc.display_name,
         "search_query": clean_location,
         "current": {
@@ -473,7 +469,6 @@ async def get_weather(pool, location: str, fetch_climate: bool = False) -> Tuple
         }
     }
 
-    # Optional historical climate data
     if fetch_climate:
         async with httpx.AsyncClient(verify=False, timeout=10.0) as client:
             resp = await client.get(HISTORICAL_URL, params={
@@ -486,7 +481,6 @@ async def get_weather(pool, location: str, fetch_climate: bool = False) -> Tuple
             if resp.status_code == 200:
                 weather_dict["climate_trends"] = resp.json().get("daily", {})
 
-    # Cache in database
     await set_cached_weather(pool, clean_location, loc.latitude, loc.longitude, weather_dict)
 
     return weather_dict, False
@@ -498,6 +492,8 @@ async def get_weather_by_coords(lat: float, lon: float) -> Dict[str, Any]:
     daily_obj = await fetch_daily_forecast(loc, days=7)
     
     return {
+        "source": "Global Meteorological Sensor Network",
+        "source_type": "WEATHERGPT_CANONICAL",
         "location_info": loc.display_name,
         "search_query": loc.display_name,
         "current": {
