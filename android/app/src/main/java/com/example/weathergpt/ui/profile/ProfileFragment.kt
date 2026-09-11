@@ -38,21 +38,26 @@ class ProfileFragment : Fragment() {
     private lateinit var switchVoiceTts: MaterialSwitch
     private lateinit var switchNotifications: MaterialSwitch
 
+    /** Full list of 11 supported Indian languages + English */
     private val languages = arrayOf(
-        "English" to "en",
-        "हिंदी (Hindi)" to "hi",
-        "தமிழ் (Tamil)" to "ta",
-        "తెలుగు (Telugu)" to "te",
-        "বাংলা (Bengali)" to "bn",
-        "मराठी (Marathi)" to "mr",
-        "ગુજરાતી (Gujarati)" to "gu"
+        "English"              to "en",
+        "हिंदी (Hindi)"        to "hi",
+        "தமிழ் (Tamil)"        to "ta",
+        "తెలుగు (Telugu)"      to "te",
+        "বাংলা (Bengali)"      to "bn",
+        "मराठी (Marathi)"      to "mr",
+        "ગુજરાતી (Gujarati)"   to "gu",
+        "ಕನ್ನಡ (Kannada)"      to "kn",
+        "മലയാളം (Malayalam)"   to "ml",
+        "ଓଡ଼ିଆ (Odia)"         to "or",
+        "ਪੰਜਾਬੀ (Punjabi)"     to "pa"
     )
 
     private val personas = arrayOf(
-        Triple("Farming & Agriculture 🌾", "farmer", "Crop advisories, irrigation timing & weather protection"),
-        Triple("Daily Commuter 🚗", "commuter", "Rain timings, umbrella prep & traffic hazards"),
-        Triple("Aviation & Travel ✈️", "aviation", "Visibility, flight delays & storm warnings"),
-        Triple("Outdoor & Sports 🏃", "outdoor", "Heat index, UV safety & activity suitability")
+        Triple("Farming & Agriculture 🌾", "farmer",   "Crop advisories, irrigation timing & weather protection"),
+        Triple("Daily Commuter 🚗",        "commuter",  "Rain timings, umbrella prep & traffic hazards"),
+        Triple("Aviation & Travel ✈️",     "aviation",  "Visibility, flight delays & storm warnings"),
+        Triple("Outdoor & Sports 🏃",      "outdoor",   "Heat index, UV safety & activity suitability")
     )
 
     override fun onCreateView(
@@ -67,47 +72,40 @@ class ProfileFragment : Fragment() {
         bindViews(view)
         populateData()
         setupListeners()
-
         return view
     }
 
     private fun bindViews(view: View) {
         tvCurrentLocation = view.findViewById(R.id.tvProfileCurrentLocation)
         tvSelectedLanguage = view.findViewById(R.id.tvSelectedLanguage)
-        tvSelectedPersona = view.findViewById(R.id.tvSelectedPersona)
-        tvPersonaDesc = view.findViewById(R.id.tvPersonaDesc)
-        tvBackendUrl = view.findViewById(R.id.tvCurrentBackendUrl)
+        tvSelectedPersona  = view.findViewById(R.id.tvSelectedPersona)
+        tvPersonaDesc      = view.findViewById(R.id.tvPersonaDesc)
+        tvBackendUrl       = view.findViewById(R.id.tvCurrentBackendUrl)
 
-        btnGpsDetect = view.findViewById(R.id.btnGpsDetect)
-        btnChangeCity = view.findViewById(R.id.btnChangeCity)
+        btnGpsDetect       = view.findViewById(R.id.btnGpsDetect)
+        btnChangeCity      = view.findViewById(R.id.btnChangeCity)
         cardLanguageSelect = view.findViewById(R.id.cardLanguageSelect)
-        cardPersonaSelect = view.findViewById(R.id.cardPersonaSelect)
-        cardBackendUrl = view.findViewById(R.id.cardBackendUrl)
+        cardPersonaSelect  = view.findViewById(R.id.cardPersonaSelect)
+        cardBackendUrl     = view.findViewById(R.id.cardBackendUrl)
 
-        toggleUnit = view.findViewById(R.id.toggleGroupUnit)
-        switchVoiceTts = view.findViewById(R.id.switchVoiceTts)
+        toggleUnit         = view.findViewById(R.id.toggleGroupUnit)
+        switchVoiceTts     = view.findViewById(R.id.switchVoiceTts)
         switchNotifications = view.findViewById(R.id.switchNotifications)
     }
 
     private fun populateData() {
-        tvCurrentLocation.text = prefs.locationName
-
-        val currentLang = languages.firstOrNull { it.second == prefs.language }?.first ?: "English"
-        tvSelectedLanguage.text = currentLang
+        tvCurrentLocation.text  = prefs.locationName
+        tvSelectedLanguage.text = languages.firstOrNull { it.second == prefs.language }?.first ?: "English"
 
         val currentPersona = personas.firstOrNull { it.second == prefs.persona } ?: personas[0]
         tvSelectedPersona.text = currentPersona.first
-        tvPersonaDesc.text = currentPersona.third
+        tvPersonaDesc.text     = currentPersona.third
+        tvBackendUrl.text      = prefs.baseUrl
 
-        tvBackendUrl.text = prefs.baseUrl
+        if (prefs.unit.equals("F", ignoreCase = true)) toggleUnit.check(R.id.btnUnitF)
+        else toggleUnit.check(R.id.btnUnitC)
 
-        if (prefs.unit.equals("F", ignoreCase = true)) {
-            toggleUnit.check(R.id.btnUnitF)
-        } else {
-            toggleUnit.check(R.id.btnUnitC)
-        }
-
-        switchVoiceTts.isChecked = prefs.isVoiceTtsEnabled
+        switchVoiceTts.isChecked      = prefs.isVoiceTtsEnabled
         switchNotifications.isChecked = prefs.isNotificationsEnabled
     }
 
@@ -115,26 +113,21 @@ class ProfileFragment : Fragment() {
         btnGpsDetect.setOnClickListener {
             if (!locationHelper.hasLocationPermission()) {
                 requestPermissions(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ),
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
                     201
                 )
                 return@setOnClickListener
             }
-
             Toast.makeText(requireContext(), "Detecting GPS location...", Toast.LENGTH_SHORT).show()
             locationHelper.fetchCurrentLocation(object : LocationHelper.LocationCallback {
                 override fun onLocationObtained(lat: Double, lon: Double) {
-                    prefs.latitude = lat
-                    prefs.longitude = lon
+                    prefs.latitude     = lat
+                    prefs.longitude    = lon
                     prefs.locationName = "GPS Coordinates (%.2f, %.2f)".format(lat, lon)
                     tvCurrentLocation.text = prefs.locationName
                     (activity as? MainActivity)?.updateTopLocation(prefs.locationName)
                     Toast.makeText(requireContext(), "Location updated from GPS", Toast.LENGTH_SHORT).show()
                 }
-
                 override fun onLocationFailed(errorMsg: String) {
                     Toast.makeText(requireContext(), "GPS error: $errorMsg", Toast.LENGTH_SHORT).show()
                 }
@@ -142,10 +135,10 @@ class ProfileFragment : Fragment() {
         }
 
         btnChangeCity.setOnClickListener {
-            val input = EditText(requireContext())
-            input.hint = "e.g. Delhi, Mumbai, Rewari, Tokyo"
-            input.setText(prefs.locationName)
-
+            val input = EditText(requireContext()).also {
+                it.hint = "e.g. Delhi, Mumbai, Rewari, Tokyo"
+                it.setText(prefs.locationName)
+            }
             AlertDialog.Builder(requireContext())
                 .setTitle("Change City / Location")
                 .setView(input)
@@ -162,14 +155,14 @@ class ProfileFragment : Fragment() {
         }
 
         cardLanguageSelect.setOnClickListener {
-            val langNames = languages.map { it.first }.toTypedArray()
-            val currentIdx = languages.indexOfFirst { it.second == prefs.language }.coerceAtLeast(0)
+            val langNames   = languages.map { it.first }.toTypedArray()
+            val currentIdx  = languages.indexOfFirst { it.second == prefs.language }.coerceAtLeast(0)
 
             AlertDialog.Builder(requireContext())
                 .setTitle("Choose Language / भाषा चुनें")
                 .setSingleChoiceItems(langNames, currentIdx) { dialog, which ->
                     val selected = languages[which]
-                    prefs.language = selected.second
+                    prefs.language         = selected.second
                     tvSelectedLanguage.text = selected.first
                     dialog.dismiss()
                     Toast.makeText(requireContext(), "Language set to ${selected.first}", Toast.LENGTH_SHORT).show()
@@ -180,15 +173,15 @@ class ProfileFragment : Fragment() {
 
         cardPersonaSelect.setOnClickListener {
             val personaNames = personas.map { it.first }.toTypedArray()
-            val currentIdx = personas.indexOfFirst { it.second == prefs.persona }.coerceAtLeast(0)
+            val currentIdx   = personas.indexOfFirst { it.second == prefs.persona }.coerceAtLeast(0)
 
             AlertDialog.Builder(requireContext())
                 .setTitle("Choose Persona / भूमिका चुनें")
                 .setSingleChoiceItems(personaNames, currentIdx) { dialog, which ->
                     val selected = personas[which]
-                    prefs.persona = selected.second
-                    tvSelectedPersona.text = selected.first
-                    tvPersonaDesc.text = selected.third
+                    prefs.persona          = selected.second
+                    tvSelectedPersona.text  = selected.first
+                    tvPersonaDesc.text      = selected.third
                     (activity as? MainActivity)?.updatePersonaBadge(selected.first)
                     dialog.dismiss()
                     Toast.makeText(requireContext(), "Persona updated to ${selected.first}", Toast.LENGTH_SHORT).show()
@@ -198,13 +191,7 @@ class ProfileFragment : Fragment() {
         }
 
         toggleUnit.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isChecked) {
-                if (checkedId == R.id.btnUnitF) {
-                    prefs.unit = "F"
-                } else {
-                    prefs.unit = "C"
-                }
-            }
+            if (isChecked) prefs.unit = if (checkedId == R.id.btnUnitF) "F" else "C"
         }
 
         switchVoiceTts.setOnCheckedChangeListener { _, isChecked ->
@@ -216,10 +203,10 @@ class ProfileFragment : Fragment() {
         }
 
         cardBackendUrl.setOnClickListener {
-            val input = EditText(requireContext())
-            input.hint = "http://10.0.2.2:8000 or http://192.168.1.X:8000"
-            input.setText(prefs.baseUrl)
-
+            val input = EditText(requireContext()).also {
+                it.hint = "http://10.0.2.2:8000 or http://192.168.1.X:8000"
+                it.setText(prefs.baseUrl)
+            }
             AlertDialog.Builder(requireContext())
                 .setTitle("Configure Backend Server URL")
                 .setMessage("Enter your computer's local IP or backend URL to connect from a real device.")
@@ -227,7 +214,7 @@ class ProfileFragment : Fragment() {
                 .setPositiveButton("Save") { _, _ ->
                     val url = input.text.toString().trim()
                     if (url.isNotEmpty()) {
-                        prefs.baseUrl = url
+                        prefs.baseUrl  = url
                         tvBackendUrl.text = prefs.baseUrl
                         (activity as? MainActivity)?.reconnectWebSocket()
                         Toast.makeText(requireContext(), "Backend URL updated", Toast.LENGTH_SHORT).show()

@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "WeatherGPT",
+    "slug": "weather-gpt",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#f4f0e8"
+    },
+    "android": {
+      "package": "com.example.weathergpt.expo"
+    },
+    "ios": {
+      "bundleIdentifier": "com.example.weathergpt.expo"
+    },
+    "plugins": [
+      "expo-status-bar"
+    ]
+  }
+}

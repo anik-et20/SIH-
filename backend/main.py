@@ -142,10 +142,12 @@ async def chat_weather(req: WeatherQueryRequest):
             language=language
         )
 
-        # Optional Sarvam AI Audio Generation (TTS)
+        # High-Speed Sarvam AI Audio Generation (TTS)
         audio_base64 = None
         if req.generate_audio:
-            audio_base64 = await generate_sarvam_tts(ai_response, language_code=detected_lang)
+            clean_lines = [l.strip() for l in ai_response.split("\n") if l.strip() and not l.strip().startswith("---") and not l.strip().startswith("#")]
+            tts_text = " ".join(clean_lines[:3])[:250] if clean_lines else ai_response[:250]
+            audio_base64 = await generate_sarvam_tts(tts_text, language_code=detected_lang)
 
         lang_display_name = LANGUAGE_NAMES.get(detected_lang, detected_lang.upper())
 

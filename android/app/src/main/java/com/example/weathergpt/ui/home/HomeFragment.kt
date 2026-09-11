@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindViews(view: View) {
-        swipeRefresh = view.findViewById(R.id.swipeRefreshHome)
+        swipeRefresh = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshHome)
         tvLocationName = view.findViewById(R.id.tvLocationName)
         tvLastUpdated = view.findViewById(R.id.tvLastUpdated)
         tvCurrentTemp = view.findViewById(R.id.tvCurrentTemp)
@@ -175,6 +175,7 @@ class HomeFragment : Fragment() {
                 layoutError.visibility = View.GONE
                 layoutMainContent.visibility = View.VISIBLE
                 populateUi(data)
+                loadTransparencyBadge()
                 (activity as? MainActivity)?.updateTopLocation(data.locationInfo)
             }.onFailure {
                 if (layoutMainContent.visibility != View.VISIBLE) {
@@ -247,4 +248,21 @@ class HomeFragment : Fragment() {
         // Refresh unit or persona changes if needed
         loadWeatherData(forceRefresh = false)
     }
+
+    private fun loadTransparencyBadge() {
+        val tvBadge = view?.findViewById<TextView>(R.id.tvTransparencyBadge) ?: return
+        viewLifecycleOwner.lifecycleScope.launch {
+            apiClient.fetchTransparency().onSuccess { jsonStr ->
+                try {
+                    val jsonObj = org.json.JSONObject(jsonStr)
+                    val isVerified = jsonObj.optBoolean("verified", false)
+                    if (isVerified) {
+                        tvBadge.text = "🛡️ Verified Source: " + jsonObj.optString("source_id", "Open-Meteo")
+                        tvBadge.visibility = View.VISIBLE
+                    }
+                } catch (e: Exception) {}
+            }
+        }
+    }
+
 }

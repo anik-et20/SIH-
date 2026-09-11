@@ -38,8 +38,9 @@ async def resolve_location(
     if clean_query in INDIAN_CITY_ALIASES:
         clean_query = INDIAN_CITY_ALIASES[clean_query]
 
-    # 1. Coordinate-based resolution (Reverse Geocoding)
-    if lat is not None and lon is not None:
+    # 1. Coordinate-based resolution (Reverse Geocoding only if explicit GPS coordinates or empty query)
+    is_gps_query = clean_query.startswith("GPS") or clean_query.startswith("Coordinates")
+    if (is_gps_query or not clean_query) and lat is not None and lon is not None:
         display_name = f"GPS ({lat:.2f}, {lon:.2f})"
         country = ""
         admin1 = ""

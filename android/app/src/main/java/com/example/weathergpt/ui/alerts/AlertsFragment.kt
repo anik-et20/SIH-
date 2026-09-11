@@ -7,62 +7,105 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weathergpt.MainActivity
 import com.example.weathergpt.R
 import com.example.weathergpt.data.models.AlertSeverity
 import com.example.weathergpt.data.models.WeatherAlert
+import com.example.weathergpt.data.remote.ApiClient
+import com.example.weathergpt.data.local.PreferencesManager
 import com.example.weathergpt.data.remote.WebSocketManager
+import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AlertsFragment : Fragment(), WebSocketManager.AlertListener {
+
+    private lateinit var prefs: PreferencesManager
+    private lateinit var apiClient: ApiClient
 
     private lateinit var recyclerAlerts: RecyclerView
     private lateinit var layoutNoAlerts: LinearLayout
     private lateinit var badgeLiveStream: TextView
     private lateinit var alertsAdapter: AlertsAdapter
     private val alertsList = mutableListOf<WeatherAlert>()
+    
+    // Phase 6: SitRep
+    private lateinit var layoutSitRep: LinearLayout
+    private lateinit var tvSitRepContent: TextView
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_alerts, container, false)
+        prefs = PreferencesManager(requireContext())
+        apiClient = ApiClient(prefs)
 
         recyclerAlerts = view.findViewById(R.id.recyclerAlerts)
         layoutNoAlerts = view.findViewById(R.id.layoutNoAlerts)
         badgeLiveStream = view.findViewById(R.id.badgeLiveStream)
+        
+        layoutSitRep = view.findViewById(R.id.layoutSitRep) ?: LinearLayout(requireContext())
+        tvSitRepContent = view.findViewById(R.id.tvSitRepContent) ?: TextView(requireContext())
 
         recyclerAlerts.layoutManager = LinearLayoutManager(requireContext())
         alertsAdapter = AlertsAdapter(alertsList)
         recyclerAlerts.adapter = alertsAdapter
 
-        // Initial default regional advisory if list empty
-        if (alertsList.isEmpty()) {
-            val timeStr = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
-            alertsList.add(
-                WeatherAlert(
-                    title = "MONSOON WEATHER ADVISORY",
-                    message = "Regional precipitation alert: Light to moderate showers expected across northern and central plains. Farmers advised to monitor moisture levels.",
-                    severity = AlertSeverity.WARNING,
-                    recommendations = listOf(
-                        "Postpone open-air pesticide spraying",
-                        "Ensure field drainage outlets are unobstructed",
-                        "Drive with caution on wet roadways"
-                    ),
-                    timestamp = timeStr
-                )
-            )
-            alertsAdapter.notifyDataSetChanged()
-        }
-
         updateEmptyState()
         (activity as? MainActivity)?.webSocketManager?.addListener(this)
 
+        fetchSachetAlerts()
+        fetchAuthoritySitRep()
+
         return view
+    }
+    
+    private fun fetchSachetAlerts() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            apiClient.fetchAlerts().onSuccess { jsonStr ->
+                try {
+                    val jsonObj = JSONObject(jsonStr)
+                    val active = jsonObj.optJSONArray("active_alerts") ?: JSONArray()
+                    
+                    val timeStr = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
+                    
+                    for (i in 0 until active.length()) {
+                        val alertObj = active.getJSONObject(i)
+                        alertsList.add(
+                            WeatherAlert(
+                                title = alertObj.optString("title", "NDMA SACHET Alert"),
+                                message = alertObj.optString("description", ""),
+                                severity = AlertSeverity.WARNING,
+                                recommendations = listOf("Follow official channels"),
+                                timestamp = timeStr
+                            )
+                        )
+                    }
+                    alertsAdapter.notifyDataSetChanged()
+                    updateEmptyState()
+                } catch (e: Exception) {}
+            }
+        }
+    }
+    
+    private fun fetchAuthoritySitRep() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            apiClient.fetchSitRep().onSuccess { jsonStr ->
+                try {
+                    val jsonObj = JSONObject(jsonStr)
+                    val summary = jsonObj.optString("summary", "")
+                    if (summary.isNotEmpty()) {
+                        tvSitRepContent.text = summary
+                        layoutSitRep.visibility = View.VISIBLE
+                    }
+                } catch (e: Exception) {}
+            }
+        }
     }
 
     override fun onAlertReceived(alert: WeatherAlert) {

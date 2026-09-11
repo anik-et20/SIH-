@@ -1,0 +1,110 @@
+[
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_fragment_ask_ai.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/fragment_ask_ai.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_fragment_forecast.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/fragment_forecast.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_activity_splash.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_chat_user.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_chat_user.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_chip_suggestion.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_chip_suggestion.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_input.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_input.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_fragment_alerts.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/fragment_alerts.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_item_chat_ai.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/item_chat_ai.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_fragment_profile.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/fragment_profile.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_fragment_home.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_chip.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_chip.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_button_primary.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_button_primary.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_activity_main.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_card_dark.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_card_dark.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_chat_ai.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_chat_ai.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_item_alert.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/item_alert.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_badge.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_badge.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_button_secondary.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_button_secondary.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_item_onboarding_page.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/item_onboarding_page.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_item_chat_user.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/item_chat_user.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_activity_onboarding.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/activity_onboarding.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_mic_idle.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_mic_idle.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_card_highlight.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_card_highlight.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/layout_item_forecast_day.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/layout/item_forecast_day.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_mic_recording.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_mic_recording.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/menu/bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.example.weathergpt.app-debug-39:/drawable_bg_card_farmer.xml.flat",
+        "source": "com.example.weathergpt.app-main-41:/drawable/bg_card_farmer.xml"
+    }
+]

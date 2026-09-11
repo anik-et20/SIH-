@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/bg_card_dark"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Severity Badge -->
+    <TextView
+        android:id="@+id/tvAlertSeverityBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_badge"
+        android:text="⚠️ SEVERE WEATHER ALERT"
+        android:textColor="@color/accent_rose"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- Alert Title / Message -->
+    <TextView
+        android:id="@+id/tvAlertMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:lineSpacingMultiplier="1.2"
+        android:text="Heavy Rainfall &amp; Strong Winds Warning: Your area may receive intense showers during the next few hours."
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <!-- Actionable Recommendations -->
+    <LinearLayout
+        android:id="@+id/layoutAlertRecommendations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="#14FFFFFF"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alert_recommended_actions"
+            android:textColor="@color/accent_cyan"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAlertRecommendations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingMultiplier="1.2"
+            android:text="• Avoid unnecessary travel\n• Protect harvested crops &amp; livestock\n• Check drainage and irrigation channels"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvAlertTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:text="Updated 10 minutes ago"
+        android:textColor="@color/text_muted"
+        android:textSize="11sp" />
+
+</LinearLayout>

@@ -17,30 +17,39 @@ class TextToSpeechHelper(context: Context) : TextToSpeech.OnInitListener {
         }
     }
 
+    /** Maps 2-letter Sarvam/ISO code to Java Locale for Android TTS. */
+    private fun toLocale(languageCode: String): Locale = when (languageCode.lowercase().take(2)) {
+        "hi" -> Locale("hi", "IN")
+        "ta" -> Locale("ta", "IN")
+        "te" -> Locale("te", "IN")
+        "bn" -> Locale("bn", "IN")
+        "mr" -> Locale("mr", "IN")
+        "gu" -> Locale("gu", "IN")
+        "kn" -> Locale("kn", "IN")
+        "ml" -> Locale("ml", "IN")
+        "or" -> Locale("or", "IN")
+        "pa" -> Locale("pa", "IN")
+        else -> Locale.ENGLISH
+    }
+
     fun speak(text: String, messageId: String, languageCode: String = "en") {
         if (!isInitialized || tts == null) return
 
+        // Tapping the same message again stops playback
         if (currentSpeakingId == messageId && tts?.isSpeaking == true) {
-            stop()
-            return
+            stop(); return
         }
-
         stop()
 
-        val locale = when (languageCode.lowercase()) {
-            "hi" -> Locale("hi", "IN")
-            "ta" -> Locale("ta", "IN")
-            "te" -> Locale("te", "IN")
-            "bn" -> Locale("bn", "IN")
-            "mr" -> Locale("mr", "IN")
-            "gu" -> Locale("gu", "IN")
-            else -> Locale.ENGLISH
-        }
-
         try {
-            tts?.language = locale
+            val locale = toLocale(languageCode)
+            val result = tts?.setLanguage(locale)
+            // Fall back to English if locale is missing/not supported
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                tts?.setLanguage(Locale.ENGLISH)
+            }
         } catch (e: Exception) {
-            tts?.language = Locale.ENGLISH
+            tts?.setLanguage(Locale.ENGLISH)
         }
 
         val cleanText = text.replace(Regex("[*#_`~]"), "").trim()
@@ -49,9 +58,7 @@ class TextToSpeechHelper(context: Context) : TextToSpeech.OnInitListener {
     }
 
     fun stop() {
-        if (tts?.isSpeaking == true) {
-            tts?.stop()
-        }
+        if (tts?.isSpeaking == true) tts?.stop()
         currentSpeakingId = null
     }
 

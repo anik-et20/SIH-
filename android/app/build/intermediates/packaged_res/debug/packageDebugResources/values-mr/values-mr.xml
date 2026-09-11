@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ai_farm_advisory_title">🌾 AI शेती सल्ला</string>
+    <string name="alerts_title">हवामान इशारे</string>
+    <string name="app_name">WeatherGPT</string>
+    <string name="app_tagline">हवामान जे तुम्हाला समजून घेते.</string>
+    <string name="btn_allow_location">स्थान परवानगी द्या</string>
+    <string name="btn_continue">पुढे जा</string>
+    <string name="btn_get_started">सुरू करा</string>
+    <string name="btn_retry">पुन्हा प्रयत्न करा</string>
+    <string name="chat_input_hint">हवामानाबद्दल विचारा...</string>
+    <string name="chat_send">पाठवा</string>
+    <string name="chat_subtitle">तुमचा AI हवामान सहाय्यक</string>
+    <string name="chat_title">WeatherGPT</string>
+    <string name="forecast_title">७ दिवसांचा हवामान अंदाज</string>
+    <string name="metric_humidity">आर्द्रता</string>
+    <string name="metric_rain_prob">पावसाची शक्यता</string>
+    <string name="metric_wind">वारा</string>
+    <string name="nav_alerts">अलर्ट</string>
+    <string name="nav_chat">AI ला विचारा</string>
+    <string name="nav_forecast">अंदाज</string>
+    <string name="nav_home">होम</string>
+    <string name="nav_profile">प्रोफाइल</string>
+    <string name="persona_aviation">विमान वाहतूक</string>
+    <string name="persona_commuter">दैनिक प्रवासी</string>
+    <string name="persona_farmer">शेती आणि शेतकरी</string>
+    <string name="persona_farmer_desc">पीक सल्ला, सिंचनाची वेळ आणि हवामान सुरक्षा</string>
+    <string name="persona_outdoor">मैदानी खेळ</string>
+    <string name="profile_title">सेटिंग्ज</string>
+    <string name="quick_ask_ai">WeatherGPT ला विचारा</string>
+    <string name="suggest_irrigate">🌾 आज पिकांना पाणी द्यावे का?</string>
+    <string name="suggest_umbrella">☔ आज पाऊस पडेल का?</string>
+</resources>

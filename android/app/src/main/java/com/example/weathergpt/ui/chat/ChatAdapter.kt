@@ -40,7 +40,7 @@ class ChatAdapter(
             holder.tvMessage.text = message.text
             holder.tvTimestamp.text = message.timestamp
         } else if (holder is AiViewHolder) {
-            holder.tvMessage.text = message.text
+            holder.tvMessage.text = formatMarkdown(message.text)
             holder.tvTimestamp.text = message.timestamp
             holder.btnTts.setOnClickListener {
                 onTtsClicked(message)
@@ -48,11 +48,29 @@ class ChatAdapter(
         }
     }
 
+    private fun formatMarkdown(text: String): CharSequence {
+        if (text.isBlank()) return ""
+        val html = text
+            .replace(Regex("(?m)^#{1,6}\\s+(.+)$"), "<b>$1</b><br/>")
+            .replace(Regex("\\*\\*(.+?)\\*\\*"), "<b>$1</b>")
+            .replace(Regex("(?<!\\*)\\*([^*]+)\\*(?!\\*)"), "<i>$1</i>")
+            .replace(Regex("(?m)^[\\*\\-]\\s+"), "&#8226; ")
+            .replace("\n", "<br/>")
+        return androidx.core.text.HtmlCompat.fromHtml(html, androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
+    }
+
     override fun getItemCount(): Int = messages.size
 
     fun addMessage(message: ChatMessage) {
         messages.add(message)
         notifyItemInserted(messages.size - 1)
+    }
+
+    fun updateLastMessage(message: ChatMessage) {
+        if (messages.isNotEmpty()) {
+            messages[messages.size - 1] = message
+            notifyItemChanged(messages.size - 1)
+        }
     }
 
     class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {

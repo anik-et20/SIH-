@@ -25,6 +25,23 @@ class SpeechRecognizerHelper(private val context: Context) {
         this.callback = callback
     }
 
+    /**
+     * Maps 2-letter Sarvam/ISO language codes to BCP-47 tags understood by Android STT.
+     */
+    private fun toBcp47(languageCode: String): String = when (languageCode.lowercase().take(2)) {
+        "hi" -> "hi-IN"
+        "ta" -> "ta-IN"
+        "te" -> "te-IN"
+        "bn" -> "bn-IN"
+        "mr" -> "mr-IN"
+        "gu" -> "gu-IN"
+        "kn" -> "kn-IN"
+        "ml" -> "ml-IN"
+        "or" -> "or-IN"
+        "pa" -> "pa-IN"
+        else -> "en-US"
+    }
+
     fun startListening(languageCode: String = "en") {
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             callback?.onError("Speech recognition not available on this device")
@@ -53,10 +70,11 @@ class SpeechRecognizerHelper(private val context: Context) {
                     isListening = false
                     callback?.onListeningStateChanged(false)
                     val msg = when (error) {
-                        SpeechRecognizer.ERROR_NO_MATCH -> "No speech recognized"
+                        SpeechRecognizer.ERROR_NO_MATCH -> "No speech recognized. Please try again."
                         SpeechRecognizer.ERROR_NETWORK -> "Network error during speech recognition"
-                        SpeechRecognizer.ERROR_AUDIO -> "Audio recording error"
-                        else -> "Speech recognition error"
+                        SpeechRecognizer.ERROR_AUDIO   -> "Audio recording error"
+                        SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Listening timed out"
+                        else -> "Speech recognition error (code $error)"
                     }
                     callback?.onError(msg)
                 }
@@ -75,20 +93,13 @@ class SpeechRecognizerHelper(private val context: Context) {
             })
         }
 
-        val speechLang = when (languageCode.lowercase()) {
-            "hi" -> "hi-IN"
-            "ta" -> "ta-IN"
-            "te" -> "te-IN"
-            "bn" -> "bn-IN"
-            "mr" -> "mr-IN"
-            "gu" -> "gu-IN"
-            else -> "en-US"
-        }
-
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, speechLang)
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to WeatherGPT...")
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, toBcp47(languageCode))
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, toBcp47(languageCode))
+            putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, false)
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "WeatherGPT sun raha hai...")
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
         }
 
         speechRecognizer?.startListening(intent)
